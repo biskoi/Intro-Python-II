@@ -1,9 +1,10 @@
 #import module we need
 import random
+import os
 
 #file i/o functions for historical results
 def load_results():
-    text_file = open("history.txt", "r")
+    text_file = open(f'{os.getcwd()}\\examples\\history.txt', "r")
     history = text_file.read().split(",")
     text_file.close()
     return history
