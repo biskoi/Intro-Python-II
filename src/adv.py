@@ -50,38 +50,45 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
-print('#######################################')
 print('Welcome to the game! Please type in your name.')
 player_name = input('>')
 player = Player(player_name, room['outside'])
 print(f'Welcome, {player.name}! For help, type in help.')
 
+def whereami():
+    print('------------------------------------------')
+    print(f'You are currently at the {player.location}')
+    print('What would you like to do?')
+
+whereami()
 
 while True:
-    print('-------------------------------------')
-    print(f'{player.name} is currently at the {player.location}')
-    print('What would you like to do?')
-    action = input('>')
+
+    action = input('>').upper()
     if action == 'help':
         print('---HELP: To move, type in the letter of the cardinal direction you want to go in. For example, type n and hit enter to move north, or e for east.')
-    elif action == 'n' or 'N':
+    elif action == 'N':
         if player.location.n_to is not None:
             player.location = player.location.n_to
+            whereami()
         else:
             print('You can\'t go there!')
-    elif action == 'e' or 'E':
+    elif action == 'E':
         if player.location.e_to is not None:
             player.location = player.location.e_to
+            whereami()
         else:
             print('You can\'t go there!')
-    elif action == 's' or 'S':
+    elif action == 'S':
         if player.location.s_to is not None:
             player.location = player.location.s_to
+            whereami()
         else:
             print('You can\'t go there!')
-    elif action == 'w' or 'W':
+    elif action == 'W':
         if player.location.w_to is not None:
             player.location = player.location.w_to
+            whereami()
         else:
             print('You can\'t go there!')
 
