@@ -1,5 +1,7 @@
 from room import Room
 from player import Player
+from item import Item
+import sys
 
 # Write a loop that:
 #
@@ -45,6 +47,12 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
+outside = room['outside']
+outside.items.append(Item('Sword', 'It\'s a sword.'))
+outside.items.append(Item('Shield', 'Goes with your sword.'))
+room['overlook'].items.append(Item('Potion', 'Heals you.'))
+
 #
 # Main
 #
@@ -61,36 +69,68 @@ def whereami():
     print('What would you like to do?')
 
 whereami()
+player.chk_inv()
 
 while True:
 
     action = input('>').upper()
-    if action == 'help':
-        print('---HELP: To move, type in the letter of the cardinal direction you want to go in. For example, type n and hit enter to move north, or e for east.')
-    elif action == 'N':
-        if player.location.n_to is not None:
-            player.location = player.location.n_to
+    words = action.split(' ')
+    if (len(words)) > 1:
+        verb = words[0]
+        noun = words[1].title()
+        if words[0] == 'TAKE':
+            # print(player.location.items.name)
+            room_search = [x.name for x in player.location.items]
+            # player.inventory.append(player.location.items.pop)
+            # print(room_search)
+            if noun in room_search:
+                item_index = room_search.index(noun)
+                player.location.items[item_index].on_take()
+                player.inventory.append(player.location.items.pop(item_index))
+
+            else:
+                print(f'You do not see a single {noun} in the room.')
+        elif words[0] == 'DROP':
+            inv_search = [x.name for x in player.inventory]
+            if noun in inv_search:
+                item_index = inv_search.index(noun)
+                player.inventory[item_index].on_drop()
+                player.location.items.append(player.inventory.pop(item_index))
+    else:
+        if action == 'HELP':
+            print('---HELP: To move, type in the letter of the cardinal direction you want to go in. \nFor example, type n and hit enter to move north, or e for east.\nYou can also type in POS for your position, or i for your inventory.')
+        elif action == 'POS':
             whereami()
+        elif action == 'I' or action == 'INVENTORY':
+            player.chk_inv()
+        elif action == 'N':
+            if player.location.n_to is not None:
+                player.location = player.location.n_to
+                whereami()
+            else:
+                print('You can\'t go there!')
+        elif action == 'E':
+            if player.location.e_to is not None:
+                player.location = player.location.e_to
+                whereami()
+            else:
+                print('You can\'t go there!')
+        elif action == 'S':
+            if player.location.s_to is not None:
+                player.location = player.location.s_to
+                whereami()
+            else:
+                print('You can\'t go there!')
+        elif action == 'W':
+            if player.location.w_to is not None:
+                player.location = player.location.w_to
+                whereami()
+            else:
+                print('You can\'t go there!')
+        elif action == 'Q':
+            sys.exit()
         else:
-            print('You can\'t go there!')
-    elif action == 'E':
-        if player.location.e_to is not None:
-            player.location = player.location.e_to
-            whereami()
-        else:
-            print('You can\'t go there!')
-    elif action == 'S':
-        if player.location.s_to is not None:
-            player.location = player.location.s_to
-            whereami()
-        else:
-            print('You can\'t go there!')
-    elif action == 'W':
-        if player.location.w_to is not None:
-            player.location = player.location.w_to
-            whereami()
-        else:
-            print('You can\'t go there!')
+            print('I don\'t understand!')
 
     
 
